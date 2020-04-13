@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import MainHeader from './MainHeader';
+import NavLinks from './NavLink';
 import './MainNavigation.css';
 
 const MainNavigation = props => {
@@ -15,7 +16,7 @@ const MainNavigation = props => {
         <Link to='/'>Your Places</Link>
       </h1>
       <nav>
-
+        <NavLinks />
       </nav>
     </MainHeader>
   );  
