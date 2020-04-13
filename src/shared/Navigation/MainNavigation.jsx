@@ -19,15 +19,14 @@ const MainNavigation = props => {
 
   return (
     <Fragment>
+      {/* This is for responsive hamburger button */}
       {drawerIsOpen && <BackDrop onClick={closeDrawer} />}
-      {drawerIsOpen
-        ? <SideDrawer>
-            <nav className="main-navigation__drawer-nav">
-              <NavLinks />
-            </nav>
-          </SideDrawer>
-        : null
-      }
+      <SideDrawer show={drawerIsOpen} hide={closeDrawer}>
+          <nav className="main-navigation__drawer-nav">
+            <NavLinks />
+          </nav>
+      </SideDrawer>
+      {/* end */}
       <MainHeader>
         <button className="main-navigation__menu-btn" onClick={openDrawer}>
           <span /> 
