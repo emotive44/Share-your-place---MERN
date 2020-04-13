@@ -4,7 +4,11 @@ import Users from './user/pages/Users';
 
 const App = () => {
     return (
-      <Users />
+      <Router>
+        <Switch>
+          <Route path='/' exact component={Users}/>
+        </Switch>
+      </Router>
     );
 }
 
