@@ -9,9 +9,11 @@ const NewPlace = () => {
         type="text"
         label="title"
         element="input"
+        validators={[]}
+        errorText="Please enter a valid title"
       />
     </form>
-  );
+  ); 
 }
 
 export default NewPlace;
