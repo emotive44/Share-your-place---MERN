@@ -53,3 +53,13 @@
     height: 20rem;
   } 
 }
+
+
+@media (max-width: 515px) {
+  .place-item__actions {
+    width: 80%;
+    margin: 0 auto;
+    margin-bottom: 0.7em;
+    padding-left: 1px;
+  }
+}
