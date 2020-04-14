@@ -5,6 +5,7 @@ import Button from '../../shared/FormElements/Button';
 import Modal from '../../shared/UIElements/Modal';
 import { IoMdEye, IoMdTrash } from 'react-icons/io';
 import { TiEdit } from 'react-icons/ti';
+import Map from '../../shared/UIElements/Map';
 
 const PlaceItem = props => {
   const [showMap, setShowMap] = useState(false);
@@ -23,7 +24,7 @@ const PlaceItem = props => {
         footer={<Button onClick={closeMapHandler} >Close</Button>}
       >
         <div className="map-container">
-          <h2>The Map</h2>
+          <Map center={props.cordinates} zoom={16}/>
         </div>
       </Modal>
       
