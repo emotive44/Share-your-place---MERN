@@ -1,0 +1,77 @@
+.button {
+  color: white;
+  font: inherit;
+  cursor: pointer;
+  margin-right: 1rem;
+  border-radius: 4px;
+  background: #06a8e3;
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #035a03;
+}
+
+.button:focus {
+  outline: none;
+}
+
+.button:hover,
+.button:active {
+  background: #60caf2;
+  border-color: #1c789a;
+}
+
+.button--inverse {
+  border-color: #2ece2e;
+  background: #035a03;
+}
+
+.button--inverse:hover,
+.button--inverse:active {
+  color: white;
+  background: #2ece2e;
+  border-color: #035a03;
+}
+
+.button--danger {
+  background: #830000;
+  border-color: #f34343;
+}
+
+.button--danger:hover,
+.button--danger:active {
+  background: #f34343;
+  border-color: #830000;
+}
+
+.button:disabled,
+.button:hover:disabled,
+.button:active:disabled {
+  color: #979797;
+  background: #ccc;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+
+.button--small {
+  font-size: 0.8rem;
+}
+
+.button--big {
+  font-size: 1.5rem;
+}
+
+.button-icon {
+    vertical-align: middle;
+    font-size: 24px;
+    margin-right: 6px;
+    margin-left: -10px;
+}
+
+.button .mb {
+  margin-bottom: -4px;
+}
+
+.button-text {
+  vertical-align: sub;
+}
