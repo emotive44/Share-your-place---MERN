@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import { validate } from '../util/validators';
 import './Input.css';
 
@@ -22,7 +22,14 @@ const inputReducer = (state, action) => {
 
 const Input = props => {
   const [inputState, dispatch] = useReducer(inputReducer, {value: '', isValid: false, isTouched: false});
+  const { value, isValid } = inputState;
+  const { id, onInput } = props;
 
+  // if: id, value, isValid, onInput are changed this component will be re-render;
+  useEffect(() => {
+    onInput(id, value, isValid)
+  }, [id, value, isValid, onInput]);
+  // end //
 
   const changeHandler = e => {
     dispatch({type: 'CHANGE', val: e.target.value, validators: props.validators});
@@ -49,7 +56,7 @@ const Input = props => {
         value={inputState.value}
       />
 
-  return (
+  return (  //here check for valid value and change styles if is not correct;
     <div className={`form-control ${!inputState.isValid && inputState.isTouched && 'form-control--invalid'}`}>
       <label htmlFor={props.id}>{props.label}</label>
       {element}
