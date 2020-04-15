@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './PlaceForm.css';
 import { DUMMY_PLACES } from './UserPlaces';
 import { useParams } from 'react-router-dom';
+import Card from '../../shared/UIElements/Card';
 import Input from '../../shared/FormElements/Input';
 import Button from '../../shared/FormElements/Button';
 import { useForm } from '../../shared/hooks/form-hook';
@@ -16,16 +17,18 @@ const UpdatePlace = () => {
   const [formState, inputHandler, setFormData] = useForm({}, false);
 
   useEffect(() => {
-    setFormData({
-      title: {
-        value: identifiedPlace.title,
-        isValid: true
-      },
-      description: {
-        value: identifiedPlace.description,
-        isValid: true
-      }
-    }, true);
+    if(identifiedPlace) { // check if we can not found place for Edit
+      setFormData({
+        title: {
+          value: identifiedPlace.title,
+          isValid: true
+        },
+        description: {
+          value: identifiedPlace.description,
+          isValid: true
+        }
+      }, true);
+    }
     setIsLoading(false);
   }, [setFormData, identifiedPlace]);
 
@@ -37,7 +40,9 @@ const UpdatePlace = () => {
   if(!identifiedPlace) { 
     return (
       <div className="center">
-        <h2>Could not find place</h2> 
+        <Card>
+          <h2>Could not find place</h2> 
+        </Card>
       </div>
     );
   }
