@@ -9,7 +9,7 @@ const formReducer = (state, action) => {
     case 'INPUT_CHANGE':
       let formIsValid = true;
       for(let inputId in state.inputs) {
-        if(inputId === action.inputId) {
+        if(inputId === action.inputId) { // action.isValid depends from validation in Input component
           formIsValid = formIsValid && action.isValid;
         } else {
           formIsValid = formIsValid && state.inputs[inputId].isValid;
@@ -35,10 +35,10 @@ const NewPlace = () => {
         value: '',
         isValid: false
       },
-      description: {
-        value: '',
-        isValid: false
-      }
+      // description: {
+      //   value: '',
+      //   isValid: false
+      // }
     },
     isValid: false
   });
@@ -46,9 +46,14 @@ const NewPlace = () => {
   const inputHandler = useCallback((id, value, isValid) => { // useCallback stop the infinity loop
     dispatch({type: 'INPUT_CHANGE', value, isValid, inputId: id}) // because this function will be use in Input coponent
   }, []);
+
+  const placeSubmitHandler = e => {
+    e.preventDefault();
+    console.log(formState.inputs);
+  }
   
   return (
-    <form className="place-form">
+    <form className="place-form" onSubmit={placeSubmitHandler}>
       <Input 
         id="title"
         type="text"
@@ -65,6 +70,14 @@ const NewPlace = () => {
         onInput={inputHandler}
         validators={[VALIDATOR_MINLENGTH(5)]}
         errorText="Please enter a valid description (at least 5 characters)"
+      />
+      <Input
+        id="address" 
+        element="input"
+        label="address"
+        onInput={inputHandler}
+        validators={[VALIDATOR_REQUIRE()]}
+        errorText="Please enter a valid address"
       />
       <Button type="submit" disabled={!formState.isValid}>ADD Place</Button>
     </form>
