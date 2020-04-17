@@ -9,13 +9,21 @@ import Map from '../../shared/UIElements/Map';
 
 const PlaceItem = props => {
   const [showMap, setShowMap] = useState(false);
+  const [showConfirmModal, setConfirmModal] = useState(false);
 
   const openMapHandler = () => setShowMap(true);
   const closeMapHandler = () => setShowMap(false);
 
+  const cancelDeteleHandler = () => setConfirmModal(false);
+  const showDeleteWarningHandler = () => setConfirmModal(true);
+  const confirmDeleteHandler = () => {
+    setConfirmModal(false);
+    console.log('deleting');
+  }
+
   return (
     <Fragment>
-      <Modal 
+      <Modal // modal for Map;
         show={showMap} 
         header={props.address}
         onCancel={closeMapHandler}
@@ -26,6 +34,24 @@ const PlaceItem = props => {
         <div className="map-container">
           <Map center={props.cordinates} zoom={16}/>
         </div>
+      </Modal>
+
+      <Modal //modal form Deletion Warning;
+        header="Are you sure?"
+        show={showConfirmModal}
+        onCancel={cancelDeteleHandler}
+        footerClass="place-item__modal-actions"
+        footer={
+          <Fragment>
+            <Button inverse onClick={cancelDeteleHandler}>CANCEL</Button>
+            <Button danger onClick={confirmDeleteHandler}>DELETE</Button>
+          </Fragment>
+        }
+      >
+        <p>
+          Do you want to proceed and delete this place?
+          Please note that it can't be undone thereafter.
+          </p>
       </Modal>
       
       <li className="place-item">
@@ -47,7 +73,7 @@ const PlaceItem = props => {
               <TiEdit className="button-icon"/>
                 <span className="button-text">Edit</span>
             </Button>
-            <Button danger>
+            <Button danger onClick={showDeleteWarningHandler}>
               <IoMdTrash className="button-icon"/>
               <span className="button-text">Delete</span>
             </Button>
