@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useContext } from 'react';
 import './PlaceItem.css';
 import Card from '../../shared/UIElements/Card';
 import Button from '../../shared/FormElements/Button';
@@ -6,10 +6,16 @@ import Modal from '../../shared/UIElements/Modal';
 import { IoMdEye, IoMdTrash } from 'react-icons/io';
 import { TiEdit } from 'react-icons/ti';
 import Map from '../../shared/UIElements/Map';
+import { AuthContext } from '../../shared/context/auth-context';
 
 const PlaceItem = props => {
   const [showMap, setShowMap] = useState(false);
   const [showConfirmModal, setConfirmModal] = useState(false);
+  const { isLoggedIn } = useContext(AuthContext);
+  const [showAuth, setAuthModal] = useState(false);
+
+  const openAuthModal = () => setAuthModal(true);
+  const closeAuthModal = () => setAuthModal(false);
 
   const openMapHandler = () => setShowMap(true);
   const closeMapHandler = () => setShowMap(false);
@@ -51,7 +57,22 @@ const PlaceItem = props => {
         <p>
           Do you want to proceed and delete this place?
           Please note that it can't be undone thereafter.
-          </p>
+        </p>
+      </Modal>
+
+      <Modal //modal form for Not Authenticated;
+        header="You are not Authenticated!"
+        show={showAuth}
+        onCancel={closeAuthModal}
+        footerClass="place-item__modal-actions"
+        footer={
+            <Button to="/auth">Go to Login</Button>
+        }
+      >
+        <p>
+          For actions like Edit or Delete you have to be authenticated.
+          You should go to Register if don't have a account or to Login.
+        </p>
       </Modal>
       
       <li className="place-item">
@@ -69,14 +90,16 @@ const PlaceItem = props => {
               <IoMdEye className="button-icon mb"/>
               <span className="button-text">View on map</span>
             </Button>
-            <Button to={`/places/${props.id}`}>
+            {/* For use these 2 buttons user need to be loggedIn */}
+            <Button to={!isLoggedIn ? null : `/places/${props.id}`} onClick={isLoggedIn ? null : openAuthModal}>
               <TiEdit className="button-icon"/>
                 <span className="button-text">Edit</span>
             </Button>
-            <Button danger onClick={showDeleteWarningHandler}>
+            <Button danger onClick={isLoggedIn ? showDeleteWarningHandler : openAuthModal }>
               <IoMdTrash className="button-icon"/>
               <span className="button-text">Delete</span>
             </Button>
+            {/* end */}
           </div>
         </Card>
       </li>

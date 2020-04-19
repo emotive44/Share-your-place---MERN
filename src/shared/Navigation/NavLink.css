@@ -21,6 +21,16 @@
   border: 1px solid transparent;
 }
 
+.nav-links .logout {
+  border-color: #ff0055;
+}
+
+.nav-links .logout:hover {
+  color: #292929;
+  background: #f8df00;
+  border-color: #292929;
+}
+
 .nav-links a:hover,
 .nav-links a:active,
 .nav-links a.active {
