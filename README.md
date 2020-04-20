@@ -1,5 +1,10 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Development server
+
+### `npm start`
+Navigate to http://localhost:5000/. The app will automatically reload if you change any of the source files.
+
 ## Available Scripts
 
 In the project directory, you can run:
