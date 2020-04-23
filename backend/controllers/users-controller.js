@@ -33,7 +33,7 @@ const signup = async (req, res, next) => {
    )
   }
 
-  const { name, email, password, places } = req.body;
+  const { name, email, password } = req.body;
   
   let existingUser;
   try {
@@ -53,7 +53,7 @@ const signup = async (req, res, next) => {
     email,
     image: 'https://img.icons8.com/plasticine/2x/user.png',
     password,
-    places
+    places: []
   })
 
   try {
