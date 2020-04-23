@@ -2,6 +2,7 @@ const uuid = require('uuid/v4');
 const { validationResult} = require('express-validator');
 const HttpError = require('../models/http-error');
 const getCoordsForAddress = require('../util/location');
+const Place = require('../models/place');
 
 let DUMMY_PLACES = [
   {
@@ -18,33 +19,51 @@ let DUMMY_PLACES = [
 ]
 
 ////////////////////////////////////////////////////////////
-const getPlaceById = (req, res, next) => {
+const getPlaceById = async (req, res, next) => {
   const placeId = req.params.placeId;
-  const place = DUMMY_PLACES.find(p => p.id === placeId)
+  
+  let place;
+  try {
+    place = await Place.findById(placeId);
+  } catch(err) {
+    const error = new HttpError('Something went wrong, could not find a place.', 500);
+    return next(error);
+  }
 
   if(!place) {
-    throw new HttpError('Could not found a place for provided id.', 404);
+    const error = new HttpError('Could not found a place for provided id.', 404);
+    return next(error);
   } 
    
-  res.json({place});
+  //make this, because mongodb create _id and we want to rid by _;
+  //we set getter to true, because we don't want to lost some of them;
+  res.json({place: place.toObject( {getters: true} )});
 }
 
 ///////////////////////////////////////////////////////////
-const getPlacesByUserId = (req, res, next) => {
+const getPlacesByUserId = async (req, res, next) => {
   const userId = req.params.userId;
-  const places = DUMMY_PLACES.filter(p => p.creator === userId);
+  
+  let places;
+  try {
+    places = await Place.find({creator: userId});
+  } catch(err) {
+    const error = new HttpError('Fetching places failed. Please try again.', 500);
+    return next(error);
+  }
 
   if(!places || places.length < 1) {
     return next(
       new HttpError('Could not found a place for provided user id.', 404)
     );
   } 
-  console.log(DUMMY_PLACES)
-  res.json({places});
+  
+  //to rid from _id in array, you need to use map;
+  res.json({places: places.map(place => place.toObject( {getters: true} ))});
 }
 
 //////////////////////////////////////////////////////////////
-const createPlace = (req, res, next) => {
+const createPlace = async (req, res, next) => {
   const errors = validationResult(req); // make a validation 
   if(!errors.isEmpty()) {               // with express validator
     throw new HttpError('Invalid inputs passed. Please check your data.', 422); 
@@ -52,16 +71,21 @@ const createPlace = (req, res, next) => {
 
   const { title, description, address, creator } = req.body;
   const coordinates = getCoordsForAddress(); // get DUMMY_COORDINATES;
-  const createdPlace = { 
-    id: uuid(),
+  const createdPlace = new Place({
     title,
-    creator,
-    address,
     description,
-    location: coordinates
+    address,
+    location: coordinates,
+    image: 'https://cropper.watch.aetnd.com/public-content-aetn.video.aetnd.com/video-thumbnails/AETN-History_VMS/21/202/tdih-may01-HD.jpg?w=1440',
+    creator
+  });
+  
+  try {
+    await createdPlace.save();
+  } catch(err) {
+    const error = new HttpError('Creating place failed, please try again.', 500);
+    return next(error);
   }
-
-  DUMMY_PLACES.push(createdPlace);
 
   res.status(201).json({ place: createdPlace }); 
 }
