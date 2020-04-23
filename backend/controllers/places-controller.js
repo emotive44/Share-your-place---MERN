@@ -91,7 +91,7 @@ const createPlace = async (req, res, next) => {
 }
 
 //////////////////////////////////////////////////////////////
-const updatePlaceById = (req, res, next) => {
+const updatePlaceById = async (req, res, next) => {
   const errors = validationResult(req); // make a validation 
   if(!errors.isEmpty()) {               // with express validator
     throw new HttpError('Invalid inputs passed. Please check your data.', 422); 
@@ -99,26 +99,47 @@ const updatePlaceById = (req, res, next) => {
 
   const { title, description } = req.body;
   const placeId = req.params.placeId;
-  const updatedPlace = { ...DUMMY_PLACES.find(p => p.id = placeId) }; //make copy
-  const placeIndex = DUMMY_PLACES.findIndex(p => p.id === placeId);
   
-  updatedPlace.title = title;
-  updatedPlace.description = description;
-  DUMMY_PLACES[placeIndex] = updatedPlace;
-  console.log(placeIndex)
-
-  res.status(200).json({place: updatedPlace});
+  let place;
+  try {
+    place = await Place.findById(placeId);
+  } catch(err) {
+    const error = new HttpError('Updating a place failed, please try again.', 500);
+    return next(error);
+  }
+ 
+  place.title = title;
+  place.description = description;
+ 
+  try {
+    await place.save();
+  } catch(err) {
+    const error = new HttpError('Updating a place failed, please try again.', 500);
+    return next(error);
+  }
+  
+  res.status(200).json({place: place.toObject( {getters: true} )});
 }
 
 ////////////////////////////////////////////////////////////////
-const deletePlace = (req, res, next) => {
+const deletePlace = async (req, res, next) => {
   const placeId = req.params.placeId;
 
-  if(!DUMMY_PLACES.find(p => p.id === placeId)) {
-    throw new HttpError('Could not find a place for that id', 404);
+  let place;
+  try {
+    place = await Place.findById(placeId);
+  } catch(err) {
+    const error = new HttpError('Deleting a place failed, please try again.', 500);
+    return next(error);
   }
 
-  DUMMY_PLACES = DUMMY_PLACES.filter(p => p.id !== placeId);
+  try {
+    await place.remove();
+  } catch(err) {
+    const error = new HttpError('Deleting a place failed, please try again.', 500);
+    return next(error);
+  }
+
   res.status(200).json({message: 'Deleted place.'})
 }
 
