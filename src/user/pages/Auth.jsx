@@ -14,11 +14,33 @@ const Auth = () => {
   const value = useContext(AuthContext);
   const history = useHistory();
 
-  const authSubmitHandler = e => {
+  const authSubmitHandler = async e => {
     e.preventDefault();
-    console.log(formState.inputs);
+    const { name, email, password } = formState.inputs;
+  
+    if(isLoginMode) {
+    } else {
+      try {
+        const response = await fetch('http://localhost:5000/api/users/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: name.value,
+            email: email.value,
+            password: password.value,
+          })
+        });
+        const responseData = await response.json();
+        console.log(responseData);
+        history.push('/') // After login or register user will be redirec to home page
+      } catch(err) {
+        console.log(err);
+      }
+    }
+
     value.login();
-    history.push('/') // After login or register user will be redirec to home page
   }
 
   const switchModeHandler = () => { 
