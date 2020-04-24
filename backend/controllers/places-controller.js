@@ -1,4 +1,3 @@
-const uuid = require('uuid/v4');
 const { validationResult} = require('express-validator');
 const mongoose = require('mongoose');
 const HttpError = require('../models/http-error');
@@ -6,21 +5,7 @@ const getCoordsForAddress = require('../util/location');
 const Place = require('../models/place');
 const User = require('../models/user');
 
-let DUMMY_PLACES = [
-  {
-    id: 'p1',
-    title: 'Empire State Biulding',
-    description: 'One of the most famous sky scrapers in the world',
-    location: {
-      lat: 40.7484474,
-      lng: -73.9871516
-    },
-    address: '20 W 34th, St, New York, NY 10001',
-    creator: 'u1'
-  }
-]
 
-////////////////////////////////////////////////////////////
 const getPlaceById = async (req, res, next) => {
   const placeId = req.params.placeId;
   
@@ -100,7 +85,7 @@ const createPlace = async (req, res, next) => {
     sess.startTransaction();              
     await createdPlace.save({ session: sess }); //whole transaction will fail;
     user.places.push(createdPlace)
-    await user.save();
+    await user.save({session: sess});
     await sess.commitTransaction(); //end//
   } catch(err) {
     const error = new HttpError('Creating place failed, please try again!', 500);
@@ -147,14 +132,24 @@ const deletePlace = async (req, res, next) => {
 
   let place;
   try {
-    place = await Place.findById(placeId);
+    place = await Place.findById(placeId).populate('creator');
   } catch(err) {
     const error = new HttpError('Deleting a place failed, please try again.', 500);
     return next(error);
   }
 
+  if(!place) {
+    const error = new HttpError('Could not find place for this id.', 404);
+    return next(error);
+  }
+
   try {
-    await place.remove();
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await place.remove({session: sess});
+    place.creator.places.pull(place);
+    await place.creator.save({session: sess});
+    sess.commitTransaction();
   } catch(err) {
     const error = new HttpError('Deleting a place failed, please try again.', 500);
     return next(error);
