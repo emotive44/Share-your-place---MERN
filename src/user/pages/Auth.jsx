@@ -21,11 +21,35 @@ const Auth = () => {
   const authSubmitHandler = async e => {
     e.preventDefault();
     const { name, email, password } = formState.inputs;
-  
+    
+    setIsLoading(true);
     if(isLoginMode) {
+      try {
+        const response = await fetch('http://localhost:5000/api/users/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: email.value,
+            password: password.value,
+          })
+        });
+        const responseData = await response.json();
+
+        if(!response.ok) {
+          throw new Error(responseData.message);
+        }
+
+        history.push('/') // After login or register user will be redirec to home page
+        value.login();
+        setIsLoading(false);
+      } catch(err) {
+        setIsLoading(false);
+        setError(err.message || 'Something went wrong, please try again!');
+      }
     } else {
       try {
-        setIsLoading(true);
         const response = await fetch('http://localhost:5000/api/users/signup', {
           method: 'POST',
           headers: {
