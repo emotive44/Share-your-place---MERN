@@ -24,16 +24,16 @@ const UpdatePlace = () => {
       try {
         const responseData = await sendRequest(`http://localhost:5000/api/places/${placeId}`);
         setPlace(responseData.place);
-        setFormData({
-          title: {
-            value: responseData.title,
-            isValid: true
-          },
-          description: {
-            value: responseData.description,
-            isValid: true
-          }
-        }, true);
+        // setFormData({
+        //   title: {
+        //     value: responseData.title,
+        //     isValid: true
+        //   },
+        //   description: {
+        //     value: responseData.description,
+        //     isValid: true
+        //   }
+        // }, true);
       } catch(err) {
         console.log(err);
       }

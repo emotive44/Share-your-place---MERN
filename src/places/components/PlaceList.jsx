@@ -28,6 +28,7 @@ const PlaceList = props => {
           creatorId={place.creator} 
           cordinates={place.location}
           description={place.description} 
+          onDelete={props.onDeletePlace}
         />
       ))}
     </ul>

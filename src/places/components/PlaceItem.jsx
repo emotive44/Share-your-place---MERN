@@ -3,16 +3,20 @@ import './PlaceItem.css';
 import Card from '../../shared/UIElements/Card';
 import Button from '../../shared/FormElements/Button';
 import Modal from '../../shared/UIElements/Modal';
+import ErrorModal from '../../shared/UIElements/ErrorModal';
+import LoadingSpinner from '../../shared/UIElements/LoadingSpinner';
 import { IoMdEye, IoMdTrash } from 'react-icons/io';
 import { TiEdit } from 'react-icons/ti';
 import Map from '../../shared/UIElements/Map';
 import { AuthContext } from '../../shared/context/auth-context';
+import { useHttpClient } from '../../shared/hooks/http-hook';
 
 const PlaceItem = props => {
   const [showMap, setShowMap] = useState(false);
   const [showConfirmModal, setConfirmModal] = useState(false);
   const { isLoggedIn } = useContext(AuthContext);
   const [showAuth, setAuthModal] = useState(false);
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const openAuthModal = () => setAuthModal(true);
   const closeAuthModal = () => setAuthModal(false);
@@ -22,13 +26,22 @@ const PlaceItem = props => {
 
   const cancelDeteleHandler = () => setConfirmModal(false);
   const showDeleteWarningHandler = () => setConfirmModal(true);
-  const confirmDeleteHandler = () => {
+
+  const confirmDeleteHandler = async () => {
     setConfirmModal(false);
-    console.log('deleting');
+    
+    try {
+      await sendRequest(`http://localhost:5000/api/places/${props.id}`, 'DELETE');
+      props.onDelete(props.id);
+    } catch(err) {
+      console.log(err);
+    }
   }
 
   return (
     <Fragment>
+      <ErrorModal error={error} onClear={clearError}/>
+
       <Modal // modal for Map;
         show={showMap} 
         header={props.address}
@@ -77,6 +90,7 @@ const PlaceItem = props => {
       
       <li className="place-item">
         <Card className="place-item__content">
+          {isLoading && <LoadingSpinner asOverlay/>}
           <div className="place-item__image">
             <img src={props.image} alt={props.title} />
           </div>
