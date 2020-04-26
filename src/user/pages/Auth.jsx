@@ -9,11 +9,11 @@ import LoadingSpinner from '../../shared/UIElements/LoadingSpinner';
 import Card from '../../shared/UIElements/Card';
 import './Auth.css';
 import { useHistory } from 'react-router-dom'
+import { useHttpClient } from '../../shared/hooks/http-hook';
 
 const Auth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
+  const { isLoading, error, clearError, sendRequest } = useHttpClient();
   const [formState, inputHandler, setFormData] = useForm({}, false);
   const value = useContext(AuthContext);
   const history = useHistory();
@@ -22,61 +22,45 @@ const Auth = () => {
     e.preventDefault();
     const { name, email, password } = formState.inputs;
     
-    setIsLoading(true);
     if(isLoginMode) {
-      try {
-        const response = await fetch('http://localhost:5000/api/users/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
+      try{
+        await sendRequest(
+          'http://localhost:5000/api/users/login', 
+          'POST',
+          JSON.stringify({
             email: email.value,
             password: password.value,
-          })
-        });
-        const responseData = await response.json();
+          }),
+          {
+            'Content-Type': 'application/json'
+          }
+        );
 
-        if(!response.ok) {
-          throw new Error(responseData.message);
-        }
-
-        history.push('/') // After login or register user will be redirec to home page
         value.login();
-        setIsLoading(false);
+        history.push('/') // After login user will be redirec to home page
       } catch(err) {
-        setIsLoading(false);
-        setError(err.message || 'Something went wrong, please try again!');
+        console.log(err);
       }
     } else {
       try {
-        const response = await fetch('http://localhost:5000/api/users/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
+        await sendRequest('http://localhost:5000/api/users/signup',
+         'POST',
+          JSON.stringify({
             name: name.value,
             email: email.value,
             password: password.value,
-          })
-        });
-        const responseData = await response.json();
-        console.log(responseData);
-
-        if(!response.ok) {
-          throw new Error(responseData.message);
-        }
-
-        history.push('/') // After login or register user will be redirec to home page
+          }),
+          {
+            'Content-Type': 'application/json'
+          }
+        );
+       
+        history.push('/') // After register user will be redirec to home page
         value.login();
-        setIsLoading(false);
       } catch(err) {
-        setIsLoading(false);
-        setError(err.message || 'Something went wrong, please try again!');
+        console.log(err);
       }
     }
-    setIsLoading(false);
   }
 
   const switchModeHandler = () => { 
@@ -98,13 +82,10 @@ const Auth = () => {
     setIsLoginMode(prevMode => !prevMode);
   }
 
-  const errorHandler = () => {
-    setError(null);
-  }
 
   return (
     <Fragment>
-      <ErrorModal error={error} onClear={errorHandler}/>
+      <ErrorModal error={error} onClear={clearError}/>
       <Card className="authentication">
         {isLoading && <LoadingSpinner asOverlay/>}
         <h2>Login Required</h2>
