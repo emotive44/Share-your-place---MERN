@@ -24,7 +24,7 @@ const Auth = () => {
     
     if(isLoginMode) {
       try{
-        await sendRequest(
+        const responseData = await sendRequest(
           'http://localhost:5000/api/users/login', 
           'POST',
           JSON.stringify({
@@ -36,14 +36,14 @@ const Auth = () => {
           }
         );
 
-        value.login();
+        value.login(responseData.user.id);
         history.push('/') // After login user will be redirec to home page
       } catch(err) {
         console.log(err);
       }
     } else {
       try {
-        await sendRequest('http://localhost:5000/api/users/signup',
+        const responseData = await sendRequest('http://localhost:5000/api/users/signup',
          'POST',
           JSON.stringify({
             name: name.value,
@@ -56,7 +56,7 @@ const Auth = () => {
         );
        
         history.push('/') // After register user will be redirec to home page
-        value.login();
+        value.login(responseData.user.id);
       } catch(err) {
         console.log(err);
       }
