@@ -42,7 +42,7 @@ const signup = async (req, res, next) => {
   const createdUser = new User({
     name,
     email,
-    image: 'https://img.icons8.com/plasticine/2x/user.png',
+    image: req.file.path,
     password,
     places: []
   })

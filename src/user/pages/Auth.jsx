@@ -21,8 +21,7 @@ const Auth = () => {
 
   const authSubmitHandler = async e => {
     e.preventDefault();
-    console.log(formState.inputs);
-    const { name, email, password } = formState.inputs;
+    const { name, email, password, image } = formState.inputs;
     
     if(isLoginMode) {
       try{
@@ -45,16 +44,14 @@ const Auth = () => {
       }
     } else {
       try {
+        const formData = new FormData();
+        formData.append('email', email.value);
+        formData.append('name', name.value);
+        formData.append('password', password.value);
+        formData.append('image', image.value);
         const responseData = await sendRequest('http://localhost:5000/api/users/signup',
          'POST',
-          JSON.stringify({
-            name: name.value,
-            email: email.value,
-            password: password.value,
-          }),
-          {
-            'Content-Type': 'application/json'
-          }
+          formData,
         );
        
         history.push('/') // After register user will be redirec to home page
