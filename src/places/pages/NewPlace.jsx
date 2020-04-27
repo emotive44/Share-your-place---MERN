@@ -9,28 +9,32 @@ import { useForm } from '../../shared/hooks/form-hook';
 import './PlaceForm.css';
 import { useHttpClient } from '../../shared/hooks/http-hook';
 import { AuthContext } from '../../shared/context/auth-context';
+import ImageUpload from '../../shared/FormElements/ImageUpload';
 
 const NewPlace = () => {
   const auth = useContext(AuthContext);
-  const [formState, inputHandler] = useForm({}, false);
+  const [formState, inputHandler] = useForm({
+    image: {
+      value: null,
+      isValid: false
+    }
+  }, false);
   const { isLoading, error, clearError, sendRequest } = useHttpClient();
   const history = useHistory();
 
   const placeSubmitHandler = async e => {
     e.preventDefault();
-    const { title, description, address } = formState.inputs;
+    const { title, description, address, image } = formState.inputs;
     try {
+      const formData = new FormData();
+      formData.append('title', title.value);
+      formData.append('description', description.value);
+      formData.append('address', address.value);
+      formData.append('creator', auth.userId);
+      formData.append('image', image.value);
       await sendRequest('http://localhost:5000/api/places',
         'POST',
-        JSON.stringify({
-          title: title.value,
-          description: description.value,
-          address: address.value,
-          creator: auth.userId
-        }),
-        {
-          'Content-Type': 'application/json'
-        }
+        formData,
       );
       history.push('/');
     } catch(err) {
@@ -67,7 +71,12 @@ const NewPlace = () => {
           onInput={inputHandler}
           validators={[VALIDATOR_REQUIRE()]}
           errorText="Please enter a valid address"
-          />
+        />
+        <ImageUpload 
+          id="image"
+          onInput={inputHandler}
+          errorText="Please provide a image."
+        />
         <Button type="submit" disabled={!formState.isValid}>ADD Place</Button>
       </form>
     </Fragment>

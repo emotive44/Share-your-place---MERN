@@ -63,7 +63,7 @@ const createPlace = async (req, res, next) => {
     description,
     address,
     location: coordinates,
-    image: 'https://cropper.watch.aetnd.com/public-content-aetn.video.aetnd.com/video-thumbnails/AETN-History_VMS/21/202/tdih-may01-HD.jpg?w=1440',
+    image: req.file.path,
     creator
   });
 
