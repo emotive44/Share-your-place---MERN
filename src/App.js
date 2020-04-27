@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import MainNavigation from './shared/Navigation/MainNavigation';
 import { AuthContext } from './shared/context/auth-context';
 import UpdatePlace from './places/pages/UpdatePlace';

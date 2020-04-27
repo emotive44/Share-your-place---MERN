@@ -1,5 +1,6 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../shared/context/auth-context';
 import BackDrop from '../UIElements/BackDrop'
 import MainHeader from './MainHeader';
 import SideDrawer from './SideDrawer';
@@ -8,6 +9,7 @@ import './MainNavigation.css';
 
 const MainNavigation = props => {
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
+  const { userId, isLoggedIn } = useContext(AuthContext);
   
   const openDrawer = () => {
     setDrawerIsOpen(true);
@@ -34,7 +36,7 @@ const MainNavigation = props => {
           <span /> 
         </button>
         <h1 className="main-navigation__title">
-          <Link to='/u1/places'>Your Places</Link>
+          {isLoggedIn ? <Link to={`/${userId}/places`}>Your Places</Link> : <a> All Users</a>}
         </h1>
         <nav className="main-navigation__header-nav">
           <NavLinks />

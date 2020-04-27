@@ -62,7 +62,7 @@
 
 @media (max-width: 515px) {
   .place-item {
-    margin-bottom: 0.5rem;
+    margin-bottom: -7.5rem;
   }
   .place-item__actions {
     width: 80%;

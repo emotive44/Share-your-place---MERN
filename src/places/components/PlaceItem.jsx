@@ -14,7 +14,7 @@ import { useHttpClient } from '../../shared/hooks/http-hook';
 const PlaceItem = props => {
   const [showMap, setShowMap] = useState(false);
   const [showConfirmModal, setConfirmModal] = useState(false);
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, userId } = useContext(AuthContext);
   const [showAuth, setAuthModal] = useState(false);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
@@ -105,14 +105,19 @@ const PlaceItem = props => {
               <span className="button-text">View on map</span>
             </Button>
             {/* For use these 2 buttons user need to be loggedIn */}
-            <Button to={!isLoggedIn ? null : `/places/${props.id}`} onClick={isLoggedIn ? null : openAuthModal}>
-              <TiEdit className="button-icon"/>
-                <span className="button-text">Edit</span>
-            </Button>
-            <Button danger onClick={isLoggedIn ? showDeleteWarningHandler : openAuthModal }>
-              <IoMdTrash className="button-icon"/>
-              <span className="button-text">Delete</span>
-            </Button>
+            {userId === props.creatorId ? (
+              <Fragment>
+                <Button to={!isLoggedIn ? null : `/places/${props.id}`} onClick={isLoggedIn ? null : openAuthModal}>
+                  <TiEdit className="button-icon"/>
+                  <span className="button-text">Edit</span>
+                </Button>
+                <Button danger onClick={isLoggedIn ? showDeleteWarningHandler : openAuthModal }>
+                  <IoMdTrash className="button-icon"/>
+                  <span className="button-text">Delete</span>
+                </Button>
+              </Fragment>
+            ) : null
+            }
             {/* end */}
           </div>
         </Card>
