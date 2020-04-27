@@ -10,6 +10,7 @@ import Card from '../../shared/UIElements/Card';
 import './Auth.css';
 import { useHistory } from 'react-router-dom'
 import { useHttpClient } from '../../shared/hooks/http-hook';
+import ImageUpload from '../../shared/FormElements/ImageUpload';
 
 const Auth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -102,6 +103,7 @@ const Auth = () => {
               validators={[VALIDATOR_REQUIRE()]}
             />
           )}
+          {!isLoginMode && <ImageUpload id="image" center />}
           <Input 
             id="email"
             type="email"
