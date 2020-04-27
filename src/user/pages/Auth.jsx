@@ -21,6 +21,7 @@ const Auth = () => {
 
   const authSubmitHandler = async e => {
     e.preventDefault();
+    console.log(formState.inputs);
     const { name, email, password } = formState.inputs;
     
     if(isLoginMode) {
@@ -70,14 +71,16 @@ const Auth = () => {
       setFormData(
         {
           ...formState.inputs,
-          name: undefined
+          name: undefined,
+          image: undefined
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
     } else {
       setFormData({
         ...formState.inputs,
-        name: { value: '', isValid: false }
+        name: { value: '', isValid: false },
+        image: { value: null, isValid: false }
       }, false);
     }
     setIsLoginMode(prevMode => !prevMode);
@@ -103,7 +106,13 @@ const Auth = () => {
               validators={[VALIDATOR_REQUIRE()]}
             />
           )}
-          {!isLoginMode && <ImageUpload id="image" center />}
+          {!isLoginMode && (
+            <ImageUpload 
+              id="image" 
+              center
+              onInput={inputHandler}
+            />
+          )}
           <Input 
             id="email"
             type="email"
