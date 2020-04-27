@@ -36,7 +36,7 @@ const MainNavigation = props => {
           <span /> 
         </button>
         <h1 className="main-navigation__title">
-          {isLoggedIn ? <Link to={`/${userId}/places`}>Your Places</Link> : <a> All Users</a>}
+          {isLoggedIn ? <Link to={`/${userId}/places`}>Your Places</Link> : <Link to="/">All Users</Link>}
         </h1>
         <nav className="main-navigation__header-nav">
           <NavLinks />

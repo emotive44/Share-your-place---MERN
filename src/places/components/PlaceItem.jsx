@@ -14,12 +14,8 @@ import { useHttpClient } from '../../shared/hooks/http-hook';
 const PlaceItem = props => {
   const [showMap, setShowMap] = useState(false);
   const [showConfirmModal, setConfirmModal] = useState(false);
-  const { isLoggedIn, userId } = useContext(AuthContext);
-  const [showAuth, setAuthModal] = useState(false);
+  const { userId } = useContext(AuthContext);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
-
-  const openAuthModal = () => setAuthModal(true);
-  const closeAuthModal = () => setAuthModal(false);
 
   const openMapHandler = () => setShowMap(true);
   const closeMapHandler = () => setShowMap(false);
@@ -72,21 +68,6 @@ const PlaceItem = props => {
           Please note that it can't be undone thereafter.
         </p>
       </Modal>
-
-      <Modal //modal form for Not Authenticated;
-        header="You are not Authenticated!"
-        show={showAuth}
-        onCancel={closeAuthModal}
-        footerClass="place-item__modal-actions"
-        footer={
-            <Button to="/auth">Go to Login</Button>
-        }
-      >
-        <p>
-          For actions like Edit or Delete you have to be authenticated.
-          You should go to Register if don't have a account or to Login.
-        </p>
-      </Modal>
       
       <li className="place-item">
         <Card className="place-item__content">
@@ -107,11 +88,11 @@ const PlaceItem = props => {
             {/* For use these 2 buttons user need to be loggedIn */}
             {userId === props.creatorId ? (
               <Fragment>
-                <Button to={!isLoggedIn ? null : `/places/${props.id}`} onClick={isLoggedIn ? null : openAuthModal}>
+                <Button to={`/places/${props.id}`}>
                   <TiEdit className="button-icon"/>
                   <span className="button-text">Edit</span>
                 </Button>
-                <Button danger onClick={isLoggedIn ? showDeleteWarningHandler : openAuthModal }>
+                <Button danger onClick={showDeleteWarningHandler}>
                   <IoMdTrash className="button-icon"/>
                   <span className="button-text">Delete</span>
                 </Button>
