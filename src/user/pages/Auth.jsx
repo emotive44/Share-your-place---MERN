@@ -37,7 +37,7 @@ const Auth = () => {
           }
         );
 
-        value.login(responseData.userId);
+        value.login(responseData.userId, responseData.token);
         history.push('/') // After login user will be redirec to home page
       } catch(err) {
         console.log(err);
@@ -55,7 +55,7 @@ const Auth = () => {
         );
        
         history.push('/') // After register user will be redirec to home page
-        value.login(responseData.userId);
+        value.login(responseData.userId, responseData.token);
       } catch(err) {
         console.log(err);
       }
