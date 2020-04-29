@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { AuthContext } from '../context/auth-context';
 import './NavLink.css';
 
@@ -27,7 +27,9 @@ const NavLinks = props => {
       )}
       {value.isLoggedIn && (
         <li>
-          <button onClick={value.logout} className="logout">Logout</button>
+          <Link to='/'>
+            <button onClick={value.logout} className="logout">Logout</button>
+          </Link>
         </li>
       )}
     </ul>
