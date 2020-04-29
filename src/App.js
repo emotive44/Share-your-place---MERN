@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import MainNavigation from './shared/Navigation/MainNavigation';
@@ -8,33 +8,10 @@ import UserPlaces from './places/pages/UserPlaces';
 import NewPlace from './places/pages/NewPlace';
 import Users from './user/pages/Users';
 import Auth from './user/pages/Auth';
+import { useAuth } from './shared/hooks/auth-hook';
 
 const App = () => {
-  const [token, setToken] = useState(false);
-  const [userId, setUserId] = useState(false);
-
-  const login = useCallback((uid, token) => {
-    setToken(token);
-    setUserId(uid);
-    localStorage.setItem(
-      'userData',
-      JSON.stringify({ userId: uid, token: token })
-    ); 
-  }, []);
-
-  const logout = useCallback(() => {
-    setToken(null);
-    setUserId(null);
-    localStorage.removeItem('userData');
-  }, []);
-
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem('userData'));
-
-    if(storedData) {
-      login(storedData.userId, storedData.token);
-    }
-  }, [login]);
+  const { userId, token, login, logout } = useAuth();
 
   return (
     <AuthContext.Provider value={{ isLoggedIn: !!token, token, userId, login, logout }}>
