@@ -1,4 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+You need to make npm install -> npm start
+cd backend -> npm install -> npm start
+And you are ready! :)
 
 ## Development server
 
